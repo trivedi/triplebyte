@@ -1,6 +1,8 @@
+import zlib
 import logging
 import os
 import util
+import codecs
 
 
 class Request:
@@ -46,20 +48,18 @@ class Request:
 		Executes the HTTP method and returns the results as a string
 		'''
 		self.data = self.methods.get(self.method)()
-		print self.data
 		return self.data
 
 	def do_get(self):
 		'''
 		Invokes HTTP GET and returns the source code for @self.filename as a string
-		'''
-		print 'GET', self.filename
-		
+		'''		
 		# Get the header for the requested file
 		header = self.do_head()
 
-		with open(self.filename, 'r') as f:
+		with open(self.filename, 'rb') as f:
 			src = f.read()
+			# src = zlib.compress(f.read())
 
 		logging.info('"%s %s" %s', self.method, self.filename, self.status)
 
@@ -70,12 +70,12 @@ class Request:
 		'''
 		Invokes HTTP HEAD and returns the header for @self.filename as a string
 		'''
-		print 'HEAD', self.filename	
 		crlf = '\r\n'
 
 		# Build the header
 		header = 'HTTP/1.1 ' + util.resp_codes.get(self.status, '') + crlf
 		header += 'Content-Type: ' + util.get_content_type(self.filename) + '; charset=UTF-8' + crlf
+		# header += 'Content-Encoding: gzip' + crlf
 		return header
 	
 

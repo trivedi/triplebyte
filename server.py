@@ -1,3 +1,4 @@
+import zlib
 import sys
 import threading
 import os
@@ -46,8 +47,6 @@ def request(sock, addr):
 		print 'creating req object'
 		r = Request(filename, method)
 		r.do_request()
-		f = open('test.jpg', 'wb')
-		f.write(r.data)
 		sock.sendall(r.data)
 		sock.close()
 		
@@ -92,13 +91,13 @@ def main():
 	print 'Server is listening on http://{}:{}'.format(host, port)
 	logging.info('Server has started')
 
-
+	'''
 	for i in range(10):
 		Worker().start()
 
 	for i in range(10):
 		Dispatcher().start()
-
+	'''
 
 
 	# Keep accepting client connections, generating a new thread for each connection
@@ -121,7 +120,7 @@ def main():
 dispatcher_queue = []
 request_queue = Queue.Queue() # Synchronized queue
 
-class Worker(threading.Thread):
+class Dispatcher(threading.Thread):
 	'''
 	Worker thread takes a request and puts it into the request queue
 	'''
@@ -137,11 +136,11 @@ class Worker(threading.Thread):
 		while 1:
 			num = random.choice(range(5))
 			request_queue.put(num)
-			print 'Produced', num
+			print 'Dispatched', num
 			time.sleep(random.random())
 
 
-class Dispatcher(threading.Thread):
+class Worker(threading.Thread):
 	'''
 	Get a request from the queue and serve it
 	'''
@@ -156,7 +155,7 @@ class Dispatcher(threading.Thread):
 		global request_queue
 		while 1:
 			num = request_queue.get()
-			print 'Dispatched', num
+			print 'Served request', num
 			request_queue.task_done()
 			time.sleep(random.random())
 
