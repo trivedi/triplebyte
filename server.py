@@ -3,11 +3,14 @@ import threading
 import os
 import stat
 import logging
+import Queue
+import random, time
 from socket import *
 from os import kill, getpid
 
 from request import Request
 import util
+
 
 
 def monitorQuit():
@@ -21,6 +24,9 @@ def monitorQuit():
 
 
 def request(sock, addr):
+	'''
+	Receives request from client socket and returns response back to the socket
+	'''
 	recv = sock.recv(1024)
 	print 'received', recv
 	recv = recv.split()
@@ -74,9 +80,10 @@ def main():
 		logging.error('Could not bind or listen')
 		sock.close()
 
+	# If the socket cannot be opened, quit the program.
 	if sock is None:
 		print "Error: cannot open socket. Exiting...\n"
-		sys.exit(1) # If the socket cannot be opened, quit the program.
+		sys.exit(1) 
 
 	# Monitor thread will wait for the 'quit' signal
 	monitor = threading.Thread(target=monitorQuit, args=[])
@@ -84,6 +91,15 @@ def main():
 
 	print 'Server is listening on http://{}:{}'.format(host, port)
 	logging.info('Server has started')
+
+
+	for i in range(10):
+		Worker().start()
+
+	for i in range(10):
+		Dispatcher().start()
+
+
 
 	# Keep accepting client connections, generating a new thread for each connection
 	while 1:
@@ -102,6 +118,47 @@ def main():
 		This would be a more efficient use of resources rather than spawning multiple threads or a single thread
 		'''
 
+dispatcher_queue = []
+request_queue = Queue.Queue() # Synchronized queue
+
+class Worker(threading.Thread):
+	'''
+	Worker thread takes a request and puts it into the request queue
+	'''
+
+	def __init__(self):
+		threading.Thread.__init__(self)
+
+	def run(self):
+		'''
+		Insert request into the queue 
+		'''
+		global request_queue
+		while 1:
+			num = random.choice(range(5))
+			request_queue.put(num)
+			print 'Produced', num
+			time.sleep(random.random())
+
+
+class Dispatcher(threading.Thread):
+	'''
+	Get a request from the queue and serve it
+	'''
+
+	def __init__(self):
+	    threading.Thread.__init__(self)
+
+	def run(self):
+		'''
+		Serve the request and pass it back to the client
+		'''
+		global request_queue
+		while 1:
+			num = request_queue.get()
+			print 'Dispatched', num
+			request_queue.task_done()
+			time.sleep(random.random())
 
 if __name__ == '__main__':
 	main()
