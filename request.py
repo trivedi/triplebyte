@@ -74,11 +74,11 @@ class Request:
 
 		# Build the header
 		header = 'HTTP/1.1 ' + util.resp_codes.get(self.__status, '') + crlf
+		header += 'Date: ' + datetime.datetime.now().strftime('%a, %d %b %Y %H:%M:%S CST') + crlf
 		header += 'Content-Type: ' + util.get_content_type(self.__filename) + '; charset=UTF-8' + crlf
 		header += 'Content-Length: %d' % len(self.__content) + crlf
+		header += 'Content-Encoding: gzip' + crlf
 		header += 'Server: Nishad HTTP (Unix)' + crlf
-		header += 'Date: ' + datetime.datetime.now().strftime('%a, %d %b %Y %H:%M:%S CST') + crlf
-		# header += 'Content-Encoding: gzip' + crlf
 		return header + crlf # end of header denoted by empty field
 
 	def get_content(self):
@@ -91,8 +91,12 @@ class Request:
 
 		with open(self.__filename, 'rb') as f:
 			src = f.read()
-			# src = zlib.compress(f.read())
-		return src
+
+		# Compress the source code using gzip
+		z = zlib.compressobj(-1, zlib.DEFLATED, 31) # -1 = middle compression level, 31 = gzip compression
+		compressed = z.compress(src) + z.flush()
+
+		return compressed
 
 
 
