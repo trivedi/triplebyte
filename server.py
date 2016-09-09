@@ -46,8 +46,7 @@ def request(sock, addr):
 	else:
 		print 'creating req object'
 		r = Request(filename, method)
-		r.do_request()
-		sock.sendall(r.data)
+		sock.sendall(r.do_request())
 		sock.close()
 		
 def main():
