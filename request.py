@@ -50,16 +50,17 @@ class Request:
 		'''
 		Executes the HTTP method and returns the results as a string
 		'''
-		self.__methods.get(self.__method)()
-		return self.__content
+		logging.info('"%s %s" %s', self.__method, self.__filename, self.__status)
+		resp = self.__methods.get(self.__method)()
+		return resp
 
 	def do_get(self):
 		'''
 		Invokes HTTP GET and returns the source code for @self.__filename as a string
 		'''		
 		# Get the header for the requested file
+		# Content of file will come from do_head because of finding the content-length
 		header = self.do_head()
-		logging.info('"%s %s" %s', self.__method, self.__filename, self.__status)
 
 		# Return the file requested (with the appropriate header)
 		return header + self.__content # extra header needed to separate from body per HTTP standards (RFC 2616)
