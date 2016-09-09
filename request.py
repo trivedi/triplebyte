@@ -8,13 +8,13 @@ class Request:
 	Object for all HTTP requests
 	'''
 	def __init__(self, filename, method, root='/website'):
-		self.root = root
-		print 'current path:', os.path.dirname(os.path.abspath(__file__))
-		print 'filename:', filename
-		#self.filename = 'resp_files/index.html' if filename == '/' else os.path.dirname(os.path.abspath(__file__))+'/website'+filename
-		self.filename = 'resp_files/index.html' if filename == '/' else os.path.dirname(os.path.abspath(__file__))+filename
-		if not filename.startswith('/website'):
-			self.filename = os.path.dirname(os.path.abspath(__file__))+self.root+filename
+		print 'filename', filename
+		if filename == '/' or filename.endswith(root):
+			self.filename = os.path.dirname(os.path.abspath(__file__))+root+'/index.html'
+		elif not filename.startswith('/website'):
+			self.filename = os.path.dirname(os.path.abspath(__file__))+root+filename
+		else:
+			self.filename = os.path.dirname(os.path.abspath(__file__))+filename
 
 		print 'modified filename:', self.filename
 		self.method = method
