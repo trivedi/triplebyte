@@ -35,8 +35,6 @@ def get_content_type(filename):
 	Returns the content-type that goes in the header based on @filename's extension
 	'''
 	ext = filename[filename.rfind('.')+1:] # rfind returns the last index of specified substring
-	print filename
-	print ext
 	return content_type.get(ext, 'xxx')
 
 def create_path(*subpaths):

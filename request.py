@@ -10,9 +10,7 @@ class Request:
 	'''
 	Object for all HTTP requests
 	'''
-	def __init__(self, filename, method, root='/website'):
-		print 'filename', filename
-
+	def __init__(self, filename, method, host, port, root='/website'):
 		# Routing scheme requires that everything be in absolute path format
 		if filename == '/' or filename.endswith(root):
 			self.__filename = util.create_path(root, '/index.html')
@@ -20,8 +18,8 @@ class Request:
 			self.__filename = util.create_path(root, filename)
 		else:
 			self.__filename = util.create_path(filename)
-
-		print 'modified filename:', self.__filename
+		self.__host = host
+		self.__port = port
 		self.__method = method
 		self.__methods = {
 			'GET' : self.do_get,
@@ -30,6 +28,7 @@ class Request:
 		self.__status = self.get_status()
 		self.__content = None
 		logging.basicConfig(filename='server.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
+
 
 	def get_status(self):
 		'''
@@ -46,13 +45,15 @@ class Request:
 			# Page doesn't exist => 404
 			return 404
 
+
 	def do_request(self):
 		'''
 		Executes the HTTP method and returns the results as a string
 		'''
-		logging.info('"%s %s" %s', self.__method, self.__filename, self.__status)
-		resp = self.__methods.get(self.__method)()
+		logging.info('(%s, %s) - "%s %s" %s', self.__host, self.__port, self.__method, self.__filename, self.__status)
+		resp = self.__methods.get(self.__method, '405 Method Not Allowed')()
 		return resp
+
 
 	def do_get(self):
 		'''
@@ -65,6 +66,7 @@ class Request:
 		# Return the file requested (with the appropriate header)
 		return header + self.__content # extra header needed to separate from body per HTTP standards (RFC 2616)
 	
+
 	def do_head(self):
 		'''
 		Invokes HTTP HEAD and returns the header for @self.__filename as a string
@@ -80,6 +82,7 @@ class Request:
 		header += 'Content-Encoding: gzip' + crlf
 		header += 'Server: Nishad HTTP (Unix)' + crlf
 		return header + crlf # end of header denoted by empty field
+
 
 	def get_content(self):
 		'''
@@ -97,8 +100,4 @@ class Request:
 		compressed = z.compress(src) + z.flush()
 
 		return compressed
-
-
-
-
 
