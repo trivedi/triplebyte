@@ -9,25 +9,10 @@ from os import kill, getpid
 from request import Request
 import util
 
-def get(url):
-	'''
-	GET request
-	Returns request object
-	'''
-	pass
-
-
-def head(url):
-	'''
-	GET request
-	Returns request object
-	'''
-	pass
-
 
 def monitorQuit():
 	'''
-	Type 'exit' on terminal to kill server
+	Watches for user inputting 'exit' on terminal to kill server
 	'''
 	while 1:
 		sent = raw_input()
@@ -35,11 +20,9 @@ def monitorQuit():
 			os.kill(os.getpid(), 9)
 
 
-
-
 def request(sock, addr):
 	recv = sock.recv(1024).decode('utf-8')
-	print recv
+	print 'received', recv
 	recv = recv.split()
 
 	'''
@@ -57,12 +40,14 @@ def request(sock, addr):
 		print 'creating req object'
 		r = Request(filename, method)
 		r.do_request()
+		sock.sendall(r.data.encode())
 		sock.close()
 		
-
-
-
 def main():
+	'''
+	Sets up the socket for listening at host and port.
+	Also creates a thread monitoring for program termination.
+	'''
 	logging.basicConfig(filename='server.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
 
 	host = 'localhost'
@@ -91,7 +76,6 @@ def main():
 		print "Error: cannot open socket. Exiting...\n"
 		sys.exit(1) # If the socket cannot be opened, quit the program.
 
-
 	# Monitor thread will wait for the 'quit' signal
 	monitor = threading.Thread(target=monitorQuit, args=[])
 	monitor.start()
@@ -99,10 +83,20 @@ def main():
 	print 'Server is listening on http://{}:{}'.format(host, port)
 	logging.info('Server has started')
 
+	# Keep accepting client connections, generating a new thread for each connection
 	while 1:
 		client, addr = sock.accept()
 		server = threading.Thread(target=request, args=[client, addr[0]])
 		server.start()
+
+		'''
+		A smarter way to use threading in a server:
+		
+		* N worker threads takes requests for files and inserts them into a queue
+		* M dispatcher threads take a request off the queue and serve the request
+
+		This would be a more efficient use of resources rather than spawning multiple threads or a single thread
+		'''
 
 
 if __name__ == '__main__':
