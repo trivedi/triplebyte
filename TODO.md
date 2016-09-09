@@ -12,6 +12,7 @@
 - [x] Private class variables
 - [x] object-oriented class-based
 - [x] Log all requests and responses
+- [x] Compress data
 - [ ] Cache files
 
 
@@ -20,5 +21,5 @@
 - Handle PUT and POST requests
 - Handle more HTTP status codes (301)
 - Handle authentication (basic, digest)
-- Compress data
 - Cache server side
+- Parse *all* of the header fields in request
