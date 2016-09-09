@@ -1,0 +1,125 @@
+@font-face{
+    font-family: "Inconsolata";
+    src: url('../fonts/Inconsolata.otf');
+}
+
+@font-face{
+    font-family: "Anonymous Pro";
+    src: url('../fonts/AnonymousPro.ttf');
+}
+body {
+    /*background-color: #f7eee1;
+    background-color: #fcf0d7;*/
+    font-family: "Inconsolata", "Helvetica Neue", Helvetica, Georgia, Palatino, "Times New Roman", serif;
+    height: 100%;
+}
+
+a {
+	text-decoration: none;
+	color: gray;
+}
+
+
+a:hover {
+	/*color: #408cff;*/
+	color: #ff5940;
+}
+
+
+
+h2 {
+	color: #43cc65;
+	font-size: 1.2em;	
+	font-family: "Inconsolata";
+}
+
+h3 {
+	/*color: #408cff;*/
+	color: #1E90FF;
+	font-size: .9em;
+	margin-top: 10px;
+	margin-bottom: 0px;
+	font-family: Inconsolata;
+}
+
+
+ul {
+	margin-top: 4px;
+	padding-left: 0px;
+	font-size: .9em;
+	line-height: 1.4em;
+	color: gray;
+	list-style: none;
+	font-family: Inconsolata;
+}
+
+
+.content > p > a:link {
+	background-color: #ffc;
+}
+
+.sidebar-links > p {
+	color: gray;
+	margin-top: 2px;
+	margin-bottom: 6px; 
+	font-size: .9em;
+}
+
+.sidebar-links > p > img {
+	padding-right: 10px;
+}
+
+#reading {
+	margin: 0px;
+	padding-top: 15px;
+	width: 90%;
+}
+
+#sauron {
+	color: #ff5940;
+	float: right;
+	width: 10%;
+}
+
+#sidebar {
+	float: left;
+	padding-top: 30px;
+	padding-left: 60px;
+	padding-right: 80px;
+	width: 150px;
+}
+
+#sidebar > img {
+	width: inherit;
+	height: 200px;
+}
+
+#sidebar > p {
+	font-size: .85em;
+}
+
+.pace {
+  -webkit-pointer-events: none;
+  pointer-events: none;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.pace-inactive {
+  display: none;
+}
+
+.pace .pace-progress {
+  /*background: #408cff;*/
+  color: #1E90FF;
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  right: 100%;
+  width: 100%;
+  height: 2px;
+}
+
+
