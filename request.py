@@ -10,11 +10,11 @@ class Request:
 	def __init__(self, filename, method, root='/website'):
 		print 'filename', filename
 		if filename == '/' or filename.endswith(root):
-			self.filename = os.path.dirname(os.path.abspath(__file__))+root+'/index.html'
+			self.filename = util.create_path(root, '/index.html')
 		elif not filename.startswith('/website'):
-			self.filename = os.path.dirname(os.path.abspath(__file__))+root+filename
+			self.filename = util.create_path(root, filename)
 		else:
-			self.filename = os.path.dirname(os.path.abspath(__file__))+filename
+			self.filename = util.create_path(filename)
 
 		print 'modified filename:', self.filename
 		self.method = method

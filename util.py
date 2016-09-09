@@ -1,3 +1,4 @@
+import os 
 
 # HTTP request methods
 req_methods = {
@@ -36,3 +37,12 @@ def get_content_type(filename):
 	print filename
 	print ext
 	return content_type.get(ext, 'xxx')
+
+def create_path(*subpaths):
+	'''
+	Creates an absolute path based on subpaths given
+	'''
+	path = os.path.dirname(os.path.abspath(__file__))
+	for file in subpaths:
+		path += file
+	return path
