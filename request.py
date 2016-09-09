@@ -7,8 +7,16 @@ class Request:
 	'''
 	Object for all HTTP requests
 	'''
-	def __init__(self, filename, method):
-		self.filename = 'resp_files/index.html' if filename == '/' else filename
+	def __init__(self, filename, method, root='/website'):
+		self.root = root
+		print 'current path:', os.path.dirname(os.path.abspath(__file__))
+		print 'filename:', filename
+		#self.filename = 'resp_files/index.html' if filename == '/' else os.path.dirname(os.path.abspath(__file__))+'/website'+filename
+		self.filename = 'resp_files/index.html' if filename == '/' else os.path.dirname(os.path.abspath(__file__))+filename
+		if not filename.startswith('/website'):
+			self.filename = os.path.dirname(os.path.abspath(__file__))+self.root+filename
+
+		print 'modified filename:', self.filename
 		self.method = method
 		self.methods = {
 			'GET' : self.do_get,
@@ -45,13 +53,13 @@ class Request:
 		'''
 		Invokes HTTP GET and returns the source code for @self.filename as a string
 		'''
-		print 'DOING GET'
+		print 'GET', self.filename
 		
 		# Get the header for the requested file
 		header = self.do_head()
 
 		with open(self.filename, 'r') as f:
-			src = '\n'.join(f.readlines())
+			src = f.read()
 
 		logging.info('"%s %s" %s', self.method, self.filename, self.status)
 
@@ -62,8 +70,7 @@ class Request:
 		'''
 		Invokes HTTP HEAD and returns the header for @self.filename as a string
 		'''
-		print self.filename
-		print 'DOING HEAD'	
+		print 'HEAD', self.filename	
 		crlf = '\r\n'
 
 		# Build the header

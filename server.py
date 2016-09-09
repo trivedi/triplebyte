@@ -21,7 +21,7 @@ def monitorQuit():
 
 
 def request(sock, addr):
-	recv = sock.recv(1024).decode('utf-8')
+	recv = sock.recv(1024)
 	print 'received', recv
 	recv = recv.split()
 
@@ -40,7 +40,9 @@ def request(sock, addr):
 		print 'creating req object'
 		r = Request(filename, method)
 		r.do_request()
-		sock.sendall(r.data.encode())
+		f = open('test.jpg', 'wb')
+		f.write(r.data)
+		sock.sendall(r.data)
 		sock.close()
 		
 def main():
@@ -94,6 +96,8 @@ def main():
 		
 		* N worker threads takes requests for files and inserts them into a queue
 		* M dispatcher threads take a request off the queue and serve the request
+
+		The queue is therefore a critical section and we need a mutex lock on it
 
 		This would be a more efficient use of resources rather than spawning multiple threads or a single thread
 		'''
