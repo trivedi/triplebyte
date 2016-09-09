@@ -24,6 +24,7 @@ content_type = {
 	'gif' : 'image/gif',
     'jpg' : 'image/jpeg',
     'jpeg' : 'image/jpeg',
+    'ico'  :  'image/x-con',
     'png': 'image/png',
     'pdf' : 'application/pdf',
     'mp3' : 'audio/mpeg'

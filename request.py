@@ -11,6 +11,8 @@ class Request:
 	'''
 	def __init__(self, filename, method, root='/website'):
 		print 'filename', filename
+		
+		# Routing scheme requires that everything be in absolute path format
 		if filename == '/' or filename.endswith(root):
 			self.filename = util.create_path(root, '/index.html')
 		elif not filename.startswith('/website'):
@@ -57,7 +59,12 @@ class Request:
 		# Get the header for the requested file
 		header = self.do_head()
 
-		with open(self.filename, 'rb') as f:
+		filename = self.filename
+		# Serve templated files in case there isn't an OK HTTP response
+		if self.status != 200:
+			filename = util.create_path('/resp_files', '/'+str(self.status)+'.html')
+
+		with open(filename, 'rb') as f:
 			src = f.read()
 			# src = zlib.compress(f.read())
 
